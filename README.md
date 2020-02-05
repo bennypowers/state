@@ -165,7 +165,7 @@ declare module '@power-elements/state/state' {
   }
 
   interface State {
-
+    checkout? CheckoutState;
   }
 }
 ```

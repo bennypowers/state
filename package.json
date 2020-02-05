@@ -1,0 +1,32 @@
+{
+  "name": "@power-elements/state",
+  "version": "0.0.1",
+  "description": "Lazy, explicit, typed, and tiny one-way state management",
+  "main": "index.js",
+  "module": "index.js",
+  "type": "module",
+  "repository": "https://github.com/bennypowers/state.git",
+  "scripts": {
+    "prepare": "tsc",
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "src",
+    "index.js",
+    "index.d.ts",
+    "state.js",
+    "state.d.ts",
+    "StateElement.js",
+    "StateElement.d.ts"
+  ],
+  "author": "Benny Powers <web@bennypowers.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^3.7.5"
+  },
+  "dependencies": {
+    "lit-element": "^2.2.1"
+  }
+}

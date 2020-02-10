@@ -177,7 +177,7 @@ registerState({
 });
 ```
 
-These helpers were heavily inspired by [crocks](crocks.dev). Go check them out.
+These helpers were heavily inspired by [crocks](https://crocks.dev). Go check them out.
 
 #### Debugging with `trace()`
 

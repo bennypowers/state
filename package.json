@@ -1,6 +1,6 @@
 {
   "name": "@power-elements/state",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Lazy, explicit, typed, and tiny one-way state management",
   "main": "index.js",
   "module": "index.js",

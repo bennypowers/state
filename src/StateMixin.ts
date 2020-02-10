@@ -3,7 +3,7 @@
 
 import type { State } from './state';
 
-import { subscribe, unsubscribe } from './state';
+import { subscribe, unsubscribe, getState } from './state';
 
 type Constructor<T = {}> = new (...args: any[]) => T;
 
@@ -16,6 +16,8 @@ interface CustomElement {
 
 export interface StatefulElement {
   state: State;
+  /** @private */
+  __stateUpdated(): void;
 }
 
 export function StateMixin<
@@ -34,6 +36,10 @@ export function StateMixin<
     disconnectedCallback(): void {
       if (super.disconnectedCallback) super.disconnectedCallback();
       unsubscribe(this);
+    }
+
+    __stateUpdated() {
+      this.state = getState();
     }
   };
 }

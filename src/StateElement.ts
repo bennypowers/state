@@ -10,4 +10,8 @@ export class StateElement extends StateMixin(LitElement) {
   @property({ type: Object }) get state(): State {
     return getState();
   }
+
+  __stateUpdated(): void {
+    this.requestUpdate();
+  }
 }

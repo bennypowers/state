@@ -1,6 +1,6 @@
-import type { UpdatingElement } from 'lit-element';
-
 import type { StatefulElement } from './StateMixin';
+
+type Key = string|number|symbol;
 
 type RecursivePartial<T> = {
   [P in keyof T]?:
@@ -13,11 +13,25 @@ export interface State extends Record<keyof State, State[keyof State]> {
   // 1️⃣🖐👏
 }
 
-export type EffectFunction = (value: State[keyof State], state?: State) => unknown;
+type StateSlice = State[keyof State];
+
+/**
+ * Effects run after state has been assigned.
+ * @param  value Local state slice. e.g. for effects on the `user` slice, the first parameter is the `user` slice
+ * @param  previous Previous value of state.
+ * @param  state global state
+ */
+export type EffectFunction = (
+  value: StateSlice,
+  previous?: StateSlice,
+  state?: State
+) => void;
 
 export type Effects = EffectFunction|EffectFunction[];
 
-type StateInitializers = { [P in keyof Partial<State>]?: { state: State[P]; effects?: Effects } };
+type StateInitializer<P extends keyof State = keyof State> = { state: State[P]; effects?: Effects }
+
+type StateInitializers = { [P in keyof State]?: StateInitializer<P> };
 
 /** Reactive state tree */
 const state = {};
@@ -29,11 +43,6 @@ const state = {};
  */
 function isObject(x: unknown): x is object {
   return !!x && Object.prototype.toString.call(x) === '[object Object]';
-}
-
-/** Duck-type for UpdatingElement so we don't have to import */
-function isUpdatingElement(element: unknown): element is UpdatingElement {
-  if (typeof element['requestUpdate'] === 'function') return true;
 }
 
 /** Element Instances */
@@ -53,9 +62,16 @@ export function registerEffects(key: keyof State, effects?: Effects): void {
 }
 
 /** Run effects for a state slice */
-export function runEffects(state: State, property: keyof State, value: State[keyof State]): void {
-  if (EFFECTS.has(property))
-    EFFECTS.get(property).forEach((f: EffectFunction) => f(value, state));
+export function runEffects(
+  property: keyof State,
+  value: StateSlice,
+  previousValue: StateSlice,
+  state: State,
+): void {
+  if (EFFECTS.has(property)) {
+    EFFECTS.get(property).forEach((f: EffectFunction) =>
+      f(value, previousValue, state));
+  }
 }
 
 /** Get a shallow copy of the current state */
@@ -64,19 +80,23 @@ export function getState(): State {
 }
 
 /** Update an element's state */
-function updateElement(element: StatefulElement): void {
-  if (isUpdatingElement(element))
-    element.requestUpdate();
-  else
-    element.state = getState();
+async function updateElement(element: StatefulElement): Promise<void> {
+  element.__stateUpdated();
 }
 
+const isStateSlice = (x: object): x is StateSlice =>
+  isObject(x);
+
 const PROXY = new Proxy(state, {
-  set(state: State, property: keyof State, value: State[keyof Partial<State>]): boolean {
+  set(state: State, property: keyof State, value: StateSlice): boolean {
     try {
+      const previousValue =
+        (isStateSlice(state[property]) ?
+          { ...(state[property] as object) }
+          : state[property]) as StateSlice;
       state[property] = value;
       INSTANCES.forEach(updateElement);
-      runEffects(state, property, value);
+      runEffects(property, value, previousValue, state);
       return true;
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -88,23 +108,17 @@ const PROXY = new Proxy(state, {
 
 /** Update the state with a partial tree */
 export function updateState(statePartial: RecursivePartial<State>): void {
-  const entries = Object.entries(statePartial) as [string|number|symbol, unknown][];
-  entries.forEach(function updateStateSlice([property, value]) {
-    PROXY[property] = !isObject(value) ? value : {
-      ...(PROXY[property] || {}) as object,
-      ...value,
-    };
-  });
+  for (const [property, value] of Object.entries(statePartial) as [Key, unknown][])
+    PROXY[property] = !isObject(value) ? value : { ...PROXY[property], ...value };
 }
 
 /** Lazily register a slice of state along with any effects you want to run when it updates */
 export function registerState(stateInitializers: StateInitializers): void {
-  const entries = Object.entries(stateInitializers) as
-    [keyof State, { state: Partial<State>; effects?: Effects }][];
-  entries.forEach(function initializeStateSlice([key, { state, effects }]) {
+  for (const [key, { state, effects }] of
+      Object.entries(stateInitializers) as [keyof State, StateInitializer][]) {
     registerEffects(key, effects);
     updateState({ [key]: state });
-  });
+  }
 }
 
 /** Subscribe an element to state updates */

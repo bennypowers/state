@@ -1,0 +1,26 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "@apollo-elements",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "@typescript-eslint/no-empty-interface": 0,
+    "brace-style": ["error", "1tbs", { "allowSingleLine": true }],
+    "curly": ["error", "multi-or-nest"],
+    "indent": ["error", 2, { "flatTernaryExpressions": true, "SwitchCase": 1 }],
+    "no-only-tests/no-only-tests": "error",
+    "operator-linebreak": ["error", "after", { "overrides": { "?": "after", ":": "before" } }],
+    "valid-jsdoc": 0
+  },
+  "overrides": [{
+    "files": "*.test.ts",
+    "env": { "mocha": true },
+    "plugins": ["no-only-tests"],
+    "rules": {
+      "no-invalid-this": "off"
+    }
+  }]
+}

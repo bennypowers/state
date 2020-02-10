@@ -1,4 +1,4 @@
-# `@power-elements/state`
+# @power-elements/state
 
 A lazy, explicit, typed, 1kb one-way state management library.
 
@@ -176,6 +176,8 @@ registerState({
   },
 });
 ```
+
+These helpers were heavily inspired by [crocks](crocks.dev). Go check them out.
 
 #### Debugging with `trace()`
 

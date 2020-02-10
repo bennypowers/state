@@ -14,12 +14,8 @@
   },
   "files": [
     "src",
-    "index.js",
-    "index.d.ts",
-    "state.js",
-    "state.d.ts",
-    "StateElement.js",
-    "StateElement.d.ts"
+    "/*.js",
+    "/*.d.ts"
   ],
   "author": "Benny Powers <web@bennypowers.com>",
   "license": "ISC",

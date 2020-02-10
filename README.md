@@ -2,11 +2,11 @@
 
 A lazy, explicit, typed, 1kb one-way state management library.
 
-👌 [Itsy *Bitsy*](#itsy-bitsy)
-👼 [Born *Lazy*](#born-lazy)  
-⛲️ [Unidirectional *State*](#unidirectional-state)  
-🎇 [Explicit *Effects*](#explicit-effects)  
-⌨️ [Well *Typed*](#well-typed)  
+- 👌 [Itsy *Bitsy*](#itsy-bitsy)
+- 👼 [Born *Lazy*](#born-lazy)
+- ⛲️ [Unidirectional *State*](#unidirectional-state)
+- 🎇 [With Explicit *Effects*](#explicit-effects)
+- ⌨️ [That's Well *Typed*](#well-typed)
 
 ## Itsy Bitsy
 

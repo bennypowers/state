@@ -1,21 +1,13 @@
+import type { State } from './state';
+
 import { LitElement, property } from 'lit-element';
 
-import { subscribe, unsubscribe, State, getState } from './state';
+import { getState } from './state';
+import { StateMixin } from './StateMixin';
 
-export * from 'lit-element';
-
-export class StateElement extends LitElement {
+export class StateElement extends StateMixin(LitElement) {
+  /** l'état c'est moi */
   @property({ type: Object }) get state(): State {
-    return getState()
-  };
-
-  constructor() {
-    super();
-    subscribe(this);
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    unsubscribe(this);
+    return getState();
   }
 }

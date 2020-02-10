@@ -208,15 +208,15 @@ import type { PaymentBros } from '@types/payment-bros';
 import type { PaymentResponse, PaymentError } from '../server/typings'
 import { registerState } from '@power-elements/state';
 
-declare module '@power-elements/state/state' {
-  interface CheckoutState {
-    token: PaymentBros.Token;
-    response: PaymentResponse;
-    error: Error | PaymentError;
-  }
+interface CheckoutState {
+  token: PaymentBros.Token;
+  response: PaymentResponse;
+  error: Error | PaymentError;
+}
 
+declare module '@power-elements/state/state' {
   interface State {
-    checkout?: CheckoutState;
+    checkout: CheckoutState;
   }
 }
 

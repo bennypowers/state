@@ -95,7 +95,7 @@ If you want to run side effects as a result of state changes, pass an `effects` 
 
 The `effects` property can be a binary function or an array of binary functions; they take the next local state slice and the previous global state.
 
-Effects run before the state tree or components updates.
+Effects run after the new state is assigned and the components are updated.
 
 ```js
 // router.js

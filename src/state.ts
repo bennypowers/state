@@ -74,9 +74,9 @@ function updateElement(element: StatefulElement): void {
 const PROXY = new Proxy(state, {
   set(state: State, property: keyof State, value: State[keyof Partial<State>]): boolean {
     try {
-      runEffects(state, property, value);
       state[property] = value;
       INSTANCES.forEach(updateElement);
+      runEffects(state, property, value);
       return true;
     } catch (error) {
       // eslint-disable-next-line no-console

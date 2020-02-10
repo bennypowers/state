@@ -9,8 +9,9 @@ type RecursivePartial<T> = {
     T[P];
 };
 
-export interface State extends Record<string, any> {}
-
+export interface State extends Record<keyof State, State[keyof State]> {
+  // 1️⃣🖐👏
+}
 
 export type EffectFunction = (value: State[keyof State], state?: State) => unknown;
 
@@ -86,8 +87,8 @@ const PROXY = new Proxy(state, {
 });
 
 /** Update the state with a partial tree */
-export function updateState(partial: RecursivePartial<State>): void {
-  const entries = Object.entries(partial) as [keyof State, State[keyof State]][];
+export function updateState(statePartial: RecursivePartial<State>): void {
+  const entries = Object.entries(statePartial) as [string|number|symbol, unknown][];
   entries.forEach(function updateStateSlice([property, value]) {
     PROXY[property] = !isObject(value) ? value : {
       ...(PROXY[property] || {}) as object,

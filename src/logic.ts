@@ -1,4 +1,4 @@
-type StatePredicate<X, Y, Z> = (x: X, y: Y, z: Z) => boolean;
+export type StatePredicate<X, Y, Z> = (x: X, y: Y, z: Z) => boolean;
 
 export const when = <X, Y, Z, Fx>(p: StatePredicate<X, Y, Z>, f: (x: X, y: Y, z: Z) => Fx) =>
   (x: X, y: Y, z: Z): X|Fx =>

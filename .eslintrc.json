@@ -3,6 +3,7 @@
   "plugins": ["@typescript-eslint"],
   "extends": ["@pwrs"],
   "rules": {
+    "no-loops/no-loops": 0,
     "@typescript-eslint/no-empty-interface": 0
   }
 }

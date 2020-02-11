@@ -13,7 +13,7 @@ export interface State extends Record<keyof State, State[keyof State]> {
   // 1️⃣🖐👏
 }
 
-type StateSlice = State[keyof State];
+export type StateSlice = State[keyof State];
 
 /**
  * Effects run after state has been assigned.

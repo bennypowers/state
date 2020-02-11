@@ -1,5 +1,5 @@
 {
-  "name": "@power-elements/state",
+  "name": "@pwrs/state",
   "version": "0.0.3",
   "description": "Lazy, explicit, typed, and tiny one-way state management",
   "main": "index.js",

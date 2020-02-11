@@ -1,4 +1,4 @@
-# @power-elements/state
+# @pwrs/state
 
 A lazy, explicit, typed, 1kb one-way state management library.
 
@@ -28,7 +28,7 @@ What that means is that if you want your initial state to look like this:
 Then call `registerState` like so:
 ```js
 // main.js, our app's entrypoint
-import { registerState } from '@power-elements/state';
+import { registerState } from '@pwrs/state';
 
 // initial app state. eagerly loaded
 registerState({
@@ -49,7 +49,7 @@ This also lets you keep your component state close by to their element definitio
 
 ```js
 // app-home/app-home.js
-import { StateElement, registerState, customElement } from '@power-elements/state';
+import { StateElement, registerState, customElement } from '@pwrs/state';
 
 registerState({
   home: {
@@ -69,7 +69,7 @@ class AppHome extends StateElement {/*..*/}
 // app-edit-profile/app-edit-profile.js
 import '@material/mwc-textfield';
 import { customElement, html } from 'lit-element';
-import { registerState, StateElement, updateState } from '@power-elements/state';
+import { registerState, StateElement, updateState } from '@pwrs/state';
 
 registerState({
   editProfile: {
@@ -115,7 +115,7 @@ Effects are ternary functions that take their next local state slice, the previo
 Simple effects perform some task every time the state changes. This example shows how a simple router set up can register an effect which lazy-loads page components.
 
 ```js
-import { registerState, updateState } from '@power-elements/state';
+import { registerState, updateState } from '@pwrs/state';
 
 const lazyLoad = ({ page }) => page && import(`../app-${page}/app-${page}.js`),
 
@@ -133,7 +133,7 @@ Most effects you write will have some predicate that drives their behaviour. We'
 
 ```js
 // app-checkout/app-checkout.js
-import { registerState, updateState, when, and, not, or } from '@power-elements/state';
+import { registerState, updateState, when, and, not, or } from '@pwrs/state';
 
 const hasProp = name => o => o[prop] != null;
 const hasToken = hasProp('token')
@@ -184,7 +184,7 @@ These helpers were heavily inspired by [crocks](https://crocks.dev). Go check th
 import `trace` to debug your state:
 
 ```js
-import { registerState, trace } from '@power-elements/state';
+import { registerState, trace } from '@pwrs/state';
 
 registerState({
   launchControl: {
@@ -198,7 +198,7 @@ registerState({
 
 ## Well-Typed
 
-`@power-elements/state` gets its types from the `State` interface on the `@power-elements/state/state` module. Use Typescript's [Module Augmentation](https://www.typescriptlang.org/docs/handbook/declaration-merging.html#module-augmentation) to merge your app's state in.
+`@pwrs/state` gets its types from the `State` interface on the `@pwrs/state/state` module. Use Typescript's [Module Augmentation](https://www.typescriptlang.org/docs/handbook/declaration-merging.html#module-augmentation) to merge your app's state in.
 
 If you're not writing typescript you can still benefit by putting those declarations in an "ambient" declaration file.
 
@@ -206,7 +206,7 @@ If you're not writing typescript you can still benefit by putting those declarat
 // app-checkout/app-checkout.ts
 import type { PaymentBros } from '@types/payment-bros';
 import type { PaymentResponse, PaymentError } from '../server/typings'
-import { registerState } from '@power-elements/state';
+import { registerState } from '@pwrs/state';
 
 interface CheckoutState {
   token: PaymentBros.Token;
@@ -214,7 +214,7 @@ interface CheckoutState {
   error: Error | PaymentError;
 }
 
-declare module '@power-elements/state/state' {
+declare module '@pwrs/state/state' {
   interface State {
     checkout: CheckoutState;
   }

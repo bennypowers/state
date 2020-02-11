@@ -20,7 +20,7 @@
   "author": "Benny Powers <web@bennypowers.com>",
   "license": "ISC",
   "devDependencies": {
-    "@pwrs/eslint-config": "0.0.1",
+    "@pwrs/eslint-config": "0.0.2",
     "@typescript-eslint/eslint-plugin": "^2.19.0",
     "@typescript-eslint/parser": "^2.19.0",
     "eslint": "^6.8.0",

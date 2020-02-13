@@ -7,7 +7,7 @@
     "module": "ES2015",
     "moduleResolution": "node",
     "outDir": ".",
-    "target": "ESNext",
+    "target": "ES2017",
     "rootDir": "./src"
   }
 }

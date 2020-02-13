@@ -133,28 +133,31 @@ Most effects you write will have some predicate that drives their behaviour. We'
 
 ```js
 // app-checkout/app-checkout.js
-import { registerState, updateState, when, and, not, or } from '@pwrs/state';
+import { registerState, updateState } from '@pwrs/state';
+import { all, hasProp, none, when } from '@pwrs/state/logic';
 
-const hasProp = name => o => o[prop] != null;
-const hasToken = hasProp('token')
-const hasResponse = hasProp('response')
-const hasResponse = hasProp('error')
-
-async function paymentEffect({ token, productId }) {
-  const { data: response, error } = await postCharge({ token, productId });
+async function paymentEffect({ cardToken, productId }) {
+  const { data: response, error } = await postCharge({ cardToken, productId });
   updateState({ subscribe: { response, error } });
 }
 
-registerState({
-  subscribe: {
-    state: { error: null, response: null, token: null, productId: null },
-    effects: when(
-        and(hasToken,
-          and(hasProductId,
-            not(or(hasResponse,
-                   hasError)))), paymentEffect),
-  },
-});
+const canPay = all(
+  none(hasProp('inFlight'), hasProp('response'), hasProp('error')),
+  hasProp('cardToken'),
+  hasProductId,
+)
+
+const effects = when(canPay, paymentEffect);
+
+const state = {
+  error: null,
+  response: null,
+  cardToken: null,
+  productId: null,
+  inFlight: false
+};
+
+registerState({ subscribe: { effects, state } });
 ```
 
 You can stack these up as well in an array of effects functions:

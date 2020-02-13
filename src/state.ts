@@ -9,32 +9,37 @@ type RecursivePartial<T> = {
     T[P];
 };
 
-export interface State extends Record<keyof State, State[keyof State]> {
-  // 1️⃣🖐👏
-}
+export interface State { }
 
-export type StateSlice = State[keyof State];
+export type StateKey =
+  keyof State;
+
+export type StateSlice =
+  State[StateKey];
 
 /**
  * Effects run after state has been assigned.
- * @param  value Local state slice. e.g. for effects on the `user` slice, the first parameter is the `user` slice
- * @param  previous Previous value of state.
+ * @param  next Local state slice. e.g. for effects on the `user` slice, the first parameter is the `user` slice
+ * @param  prev Previous value of state.
  * @param  state global state
  */
-export type EffectFunction = (
-  value: StateSlice,
-  previous?: StateSlice,
-  state?: State
-) => void;
+export type EffectFunction<T extends StateSlice = StateSlice> =
+  (next: T, prev?: T, state?: State) =>
+    unknown
+    | Promise<unknown>;
 
-export type Effects = EffectFunction|EffectFunction[];
+export type Effects<T extends StateSlice = StateSlice> =
+  EffectFunction<T> |
+  EffectFunction<T>[];
 
-type StateInitializer<P extends keyof State = keyof State> = { state: State[P]; effects?: Effects }
+export interface SliceInitializer<P extends StateKey = StateKey> {
+  effects?: Effects<State[P]>;
+  state: State[P];
+}
 
-type StateInitializers = { [P in keyof State]?: StateInitializer<P> };
-
-/** Reactive state tree */
-const state = {};
+export type StateInitializer = {
+  [P in StateKey]?: SliceInitializer<P>
+};
 
 /**
  * isObject :: a -> Boolean
@@ -45,14 +50,22 @@ function isObject(x: unknown): x is object {
   return !!x && Object.prototype.toString.call(x) === '[object Object]';
 }
 
+const isStateSlice = isObject as (x: object) => x is StateSlice;
+
+/** Reactive state tree */
+const state = {};
+
+
 /** Element Instances */
-const INSTANCES = new Set() as Set<StatefulElement>;
+const INSTANCES =
+  new Set() as Set<StatefulElement>;
 
 /** Effecting functions to run on state change */
-const EFFECTS = new Map() as Map<keyof State, EffectFunction[]>;
+const EFFECTS =
+  new Map() as Map<StateKey, EffectFunction[]>;
 
 /** Register effects for a State slice */
-export function registerEffects(key: keyof State, effects?: Effects): void {
+export function registerEffects(key: StateKey, effects?: Effects): void {
   if (!effects) return;
   const registeredEffects = Array.isArray(effects) ? effects : [effects];
   if (EFFECTS.has(key))
@@ -63,14 +76,14 @@ export function registerEffects(key: keyof State, effects?: Effects): void {
 
 /** Run effects for a state slice */
 export function runEffects(
-  property: keyof State,
-  value: StateSlice,
-  previousValue: StateSlice,
+  property: StateKey,
+  next: StateSlice,
+  prev: StateSlice,
   state: State,
 ): void {
   if (EFFECTS.has(property)) {
-    EFFECTS.get(property).forEach((f: EffectFunction) =>
-      f(value, previousValue, state));
+    for (const f of EFFECTS.get(property))
+      f(next, prev, state);
   }
 }
 
@@ -84,25 +97,20 @@ async function updateElement(element: StatefulElement): Promise<void> {
   element.__stateUpdated();
 }
 
-const isStateSlice = (x: object): x is StateSlice =>
-  isObject(x);
-
 const PROXY = new Proxy(state, {
-  set(state: State, property: keyof State, value: StateSlice): boolean {
-    try {
-      const previousValue =
-        (isStateSlice(state[property]) ?
-          { ...(state[property] as object) }
-          : state[property]) as StateSlice;
-      state[property] = value;
-      INSTANCES.forEach(updateElement);
-      runEffects(property, value, previousValue, state);
-      return true;
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-      return false;
-    }
+  set(state: State, key: StateKey, next: StateSlice): boolean {
+    const slice = state[key];
+
+    const prev = (
+        Array.isArray(slice) ? [...slice as []]
+      : isStateSlice(slice) ? { ...(slice as object) }
+      : slice
+    ) as StateSlice;
+
+    state[key] = next;
+    INSTANCES.forEach(updateElement);
+    runEffects(key, next, prev, state);
+    return true;
   },
 });
 
@@ -113,9 +121,9 @@ export function updateState(statePartial: RecursivePartial<State>): void {
 }
 
 /** Lazily register a slice of state along with any effects you want to run when it updates */
-export function registerState(stateInitializers: StateInitializers): void {
+export function registerState(stateInitializers: StateInitializer): void {
   for (const [key, { state, effects }] of
-      Object.entries(stateInitializers) as [keyof State, StateInitializer][]) {
+      Object.entries(stateInitializers) as [StateKey, SliceInitializer][]) {
     registerEffects(key, effects);
     updateState({ [key]: state });
   }

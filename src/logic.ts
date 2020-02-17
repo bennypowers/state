@@ -90,5 +90,4 @@ export const propChanged: PropChangedType =
 
 export const receivedProp: <T extends StateSlice>(prop: keyof T) => StatePredicate<T> =
   prop =>
-    propChanged(prop) &&
-    hasProp(prop);
+    and(propChanged(prop), hasProp(prop));

@@ -1,6 +1,6 @@
 {
   "name": "@pwrs/state",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Lazy, explicit, typed, and tiny one-way state management",
   "main": "index.js",
   "module": "index.js",

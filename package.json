@@ -6,6 +6,7 @@
   "module": "index.js",
   "type": "module",
   "repository": "https://github.com/bennypowers/state.git",
+  "sideEffects": false,
   "scripts": {
     "prepare": "tsc",
     "build": "tsc",
@@ -20,9 +21,9 @@
   "author": "Benny Powers <web@bennypowers.com>",
   "license": "ISC",
   "devDependencies": {
-    "@pwrs/eslint-config": "0.0.4",
-    "@typescript-eslint/eslint-plugin": "^2.19.0",
-    "@typescript-eslint/parser": "^2.19.0",
+    "@pwrs/eslint-config": "0.0.5",
+    "@typescript-eslint/eslint-plugin": "^2.20.0",
+    "@typescript-eslint/parser": "^2.20.0",
     "eslint": "^6.8.0",
     "typescript": "^3.8.1-rc"
   },

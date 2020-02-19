@@ -5,7 +5,10 @@
   "main": "index.js",
   "module": "index.js",
   "type": "module",
-  "repository": "https://github.com/bennypowers/state.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bennypowers/state.git"
+  },
   "sideEffects": false,
   "scripts": {
     "prepare": "tsc",

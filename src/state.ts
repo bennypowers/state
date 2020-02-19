@@ -65,7 +65,7 @@ const EFFECTS =
   new Map() as Map<StateKey, EffectFunction[]>;
 
 /** Register effects for a State slice */
-export function registerEffects(key: StateKey, effects?: Effects): void {
+function registerEffects(key: StateKey, effects?: Effects): void {
   if (!effects) return;
   const registeredEffects = Array.isArray(effects) ? effects : [effects];
   if (EFFECTS.has(key))
@@ -75,12 +75,7 @@ export function registerEffects(key: StateKey, effects?: Effects): void {
 }
 
 /** Run effects for a state slice */
-export function runEffects(
-  property: StateKey,
-  next: StateSlice,
-  prev: StateSlice,
-  state: State,
-): void {
+function runEffects(property: StateKey, next: StateSlice, prev: StateSlice, state: State): void {
   if (EFFECTS.has(property)) {
     for (const f of EFFECTS.get(property))
       f(next, prev, state);
@@ -94,7 +89,7 @@ export function getState(): State {
 
 /** Update an element's state */
 async function updateElement(element: StatefulElement): Promise<void> {
-  element.__stateUpdated();
+  element.stateUpdated();
 }
 
 const PROXY = new Proxy(state, {

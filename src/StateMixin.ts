@@ -16,13 +16,14 @@ interface CustomElement {
 
 export interface StatefulElement {
   state: State;
-  /** @private */
-  __stateUpdated(): void;
+  /**
+   * Callback for when State is updated.
+   * Useful e.g. to call your element's `render` method here.
+   */
+  stateUpdated(): void;
 }
 
-export function StateMixin<
-  Base extends Constructor<CustomElement>
->(superclass: Base) {
+export function StateMixin<Base extends Constructor<CustomElement>>(superclass: Base) {
   return class StateMixinClass extends superclass implements StatefulElement {
     state: State;
 
@@ -38,7 +39,7 @@ export function StateMixin<
       unsubscribe(this);
     }
 
-    __stateUpdated() {
+    stateUpdated() {
       this.state = getState();
     }
   };

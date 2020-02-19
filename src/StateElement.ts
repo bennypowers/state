@@ -11,7 +11,7 @@ export class StateElement extends StateMixin(LitElement) {
     return getState();
   }
 
-  __stateUpdated(): void {
+  stateUpdated(): void {
     this.requestUpdate();
   }
 }

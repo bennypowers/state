@@ -7,10 +7,10 @@ import { StateMixin } from './StateMixin';
 
 export class StateElement extends StateMixin(LitElement) {
   /** l'état c'est moi */
-  @property({ type: Object }) get state(): State {
-    return getState();
-  }
+  @property({ type: Object })
+  get state(): State { return getState(); }
 
+  /** @protected */
   stateUpdated(): void {
     this.requestUpdate();
   }

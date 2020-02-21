@@ -39,6 +39,10 @@ export function StateMixin<Base extends Constructor<CustomElement>>(superclass: 
       unsubscribe(this);
     }
 
+    /**
+     * Callback for when state is updated
+     * @protected
+     */
     stateUpdated() {
       this.state = getState();
     }
